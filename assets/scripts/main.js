@@ -30,7 +30,7 @@ function getRecipesFromStorage() {
 		return JSON.parse(recipeData);
 	}
 	else{
-		return null
+		return [];
 	}
 
 }
@@ -73,6 +73,8 @@ function saveRecipesToStorage(recipes) {
 	// B1. TODO - Complete the functionality as described in this function
 	//            header. It is possible in only a single line, but should
 	//            be no more than a few lines.
+	const recipesString =  JSON.stringify(recipes);
+	localStorage.setItem('recipes', recipesString);
 }
 
 /**
@@ -81,6 +83,8 @@ function saveRecipesToStorage(recipes) {
  */
 function initFormHandler() {
 	// B2. TODO - Get a reference to the <form> element
+	const formElement = document.querySelector('form');
+
 	// B3. TODO - Add an event listener for the 'submit' event, which fires when the
 	//            submit button is clicked
 	// Steps B4-B9 will occur inside the event listener from step B3
@@ -93,9 +97,89 @@ function initFormHandler() {
 	// B8. TODO - Append this new <recipe-card> to <main>
 	// B9. TODO - Get the recipes array from localStorage, add this new recipe to it, and
 	//            then save the recipes array back to localStorage
+	const submitButton = document.querySelector("button[type='submit']");
+	submitButton.addEventListener('click', () =>{
+		//B4
+		const formData = new FormData(formElement);
+
+		//B5
+		const recipeObject = new Object();
+		formData.forEach((value,key) => {
+			recipeObject[key] = value;
+		});
+
+		//B6
+		const newRecipe = document.createElement('recipe-card');
+
+		//B7
+		newRecipe.data = recipeObject;
+
+		//B8
+		const mainElement = document.querySelector('main');
+		mainElement.appendChild(newRecipe);
+
+		//B9
+		const currRecipes = getRecipesFromStorage()
+		currRecipes.push(recipeObject)
+		saveRecipesToStorage(currRecipes);
+	});
+
 	// B10. TODO - Get a reference to the "Clear Local Storage" button
+	const clearButton = document.querySelector("button.danger[type='button']");
+
 	// B11. TODO - Add a click event listener to clear local storage button
 	// Steps B12 & B13 will occur inside the event listener from step B11
 	// B12. TODO - Clear the local storage
 	// B13. TODO - Delete the contents of <main>
+	clearButton.addEventListener('click', () =>{
+		//B12
+		localStorage.clear();
+
+		//B13
+		const mainElement = document.querySelector('main');
+		mainElement.innerHTML = "";
+	});
 }
+
+/*
+localStorage.setItem('recipes', JSON.stringify([
+  {
+    "imgSrc": "./assets/images/1_spooky-ghost-cookies.jpeg",
+    "imgAlt": "Spooky Ghost Cookies",
+    "titleLnk": "https://www.delish.com/holiday-recipes/halloween/a28637917/ghost-cookies-recipe/",
+    "titleTxt": "Spooky Ghost Cookies",
+    "organization": "Delish.com",
+    "rating": 5,
+    "numRatings": 1,
+    "lengthTime": "2 hr",
+    "ingredients": "Light corn syrup, almond, black food coloring, powdered sugar,"
+  },
+  {
+    "imgSrc": "./assets/images/2_frightfully-easy-ghost-cookies.jpeg",
+    "imgAlt": "Ghost cookies in pumpkin bowl",
+    "titleLnk": "https://www.pillsbury.com/recipes/frightfully-easy-ghost-cookies/bed2af7e-59a0-4b68-be25-1dcaeca66254",
+    "titleTxt": "Frightfully Easy Ghost Cookies",
+    "organization": "Pillsbury",
+    "rating": 4,
+    "numRatings": 90,
+    "lengthTime": "30 min",
+    "ingredients": "Peanut butter filled, chocolate chips, candy coating"
+  },
+  {
+    "imgSrc": "./assets/images/3_ingredient-ghost-halloween-cookies.jpeg",
+    "imgAlt": "Ghost cookies in metal tin",
+    "titleLnk": "https://butterwithasideofbread.com/easy-ghost-halloween-cookies/",
+    "titleTxt": "3 Ingredient Easy Ghost Halloween Cookies",
+    "organization": "Butter with a Side of Bread",
+    "rating": 0,
+    "numRatings": 0,
+    "lengthTime": "10 min",
+    "ingredients": "White almond bark, mini chocolate chips"
+  }
+]));
+*/
+
+/*
+Source: ./assets/images/pumpkin-cookies.jpg
+Link: https://www.realsimple.com/holidays-entertaining/holidays/halloween/pumpkin-sugar-cookies
+*/
